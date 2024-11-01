@@ -48,9 +48,9 @@ const Navbar = () => {
 
       {/* Mobile Toggle Button */}
       <div className="md:hidden text-center">
-        <button onClick={toggleMobileMenu} className="focus:outline-none">
+        <button onClick={toggleMobileMenu} className="focus:outline-none transform transition-transform duration-300 hover:scale-105">
           <svg
-            className="w-6 h-6 text-gray-600"
+            className={`w-6 h-6 text-gray-600 transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-45' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -65,31 +65,31 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Navbar Links */}
-      <div className="text-center py-5 text-lg permanent-marker-regular">
-        <nav className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? 'block' : 'hidden md:block'}`}>
+      {/* Navbar Links with Transition */}
+      <div className={`text-center xl:py-5 py-0 text-lg permanent-marker-regular transition-all duration-300 ease-in-out overflow-hidden ${isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
+        <nav className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? 'block xl:bg-white bg-black' : 'hidden md:block'}`}>
           <NavLink 
             to="/" 
             exact 
-            className={({ isActive }) => `text-gray-600 py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 text-gray-600' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Home
           </NavLink>
           <NavLink 
             to="/menu" 
-            className={({ isActive }) => `text-gray-600 py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 text-gray-600' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Menu
           </NavLink>
           <NavLink 
             to="/truck" 
-            className={({ isActive }) => `text-gray-600 py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 text-gray-600' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Truck Locator
           </NavLink>
           <NavLink 
             to="/contact" 
-            className={({ isActive }) => `text-gray-600 py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 text-gray-600' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Contact
           </NavLink>
