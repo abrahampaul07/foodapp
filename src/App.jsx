@@ -1,7 +1,7 @@
 import './App.css'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from './Pages/Home';
-import { Menu } from 'lucide-react';
+import Menu from './Pages/Menu';
 import TruckLocator from './Pages/TruckLocator';
 import Contact from './Pages/Contact';
 import Navbar from './Components/Navbar';

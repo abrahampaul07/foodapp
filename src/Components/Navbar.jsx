@@ -10,6 +10,12 @@ const Navbar = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleNavLinkClick = () => {
+    if (isMobileMenuOpen) {
+      setMobileMenuOpen(false); 
+    }
+  };
+
   return (
     <div className="bg-white shadow-md">
       {/* Top Row */}
@@ -65,30 +71,34 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Navbar Links with Transition */}
-      <div className={`text-center xl:py-5 py-0 text-lg permanent-marker-regular transition-all duration-300 ease-in-out overflow-hidden ${isMobileMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}>
-        <nav className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? 'block xl:bg-white bg-black' : 'hidden md:block'}`}>
+      {/* Navbar Links */}
+      <div className={`text-center xl:py-5 text-lg permanent-marker-regular ${isMobileMenuOpen ? 'block' : 'hidden md:block'}`}>
+        <nav className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? 'xl:bg-white bg-black' : ''}`}>
           <NavLink 
             to="/" 
             exact 
+            onClick={handleNavLinkClick}
             className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Home
           </NavLink>
           <NavLink 
             to="/menu" 
+            onClick={handleNavLinkClick}
             className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Menu
           </NavLink>
           <NavLink 
             to="/truck" 
+            onClick={handleNavLinkClick}
             className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Truck Locator
           </NavLink>
           <NavLink 
             to="/contact" 
+            onClick={handleNavLinkClick}
             className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Contact
