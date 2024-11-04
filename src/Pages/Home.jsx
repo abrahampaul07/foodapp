@@ -11,7 +11,7 @@ const sections = [
     content: `We're passionate about bringing you the ultimate corn dog experience! Serving up crispy, golden-brown corn dogs made from the finest ingredients, we take pride in our time-honored recipes that have delighted taste buds for generations. Whether you're craving a classic corn dog, a gourmet twist, or a vegetarian option, we have something for everyone.`,
     image: image,
     buttonText: 'Truck Locator',
-    navigateTo: '/location',
+    navigateTo: '/location', // Add navigation path
   },
   {
     id: 2,
@@ -19,15 +19,15 @@ const sections = [
     content: 'Explore our menu, discover our unique flavors, and join the corn dog community! Follow us on social media for the latest updates, special promotions, and mouthwatering photos that will make your taste buds tingle.',
     image: image1,
     buttonText: 'View Menu',
-    navigateTo: '/menu',
+    navigateTo: '/menu', // Add navigation path
   },
 ];
 
 const Home = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleButtonClick = (navigateTo) => {
-    navigate(navigateTo);
+    navigate(navigateTo); // Use navigate to go to the desired route
   };
 
   return (
@@ -35,16 +35,14 @@ const Home = () => {
       <Carousal />
       <div>
         {sections.map((section, index) => (
-          <div key={section.id} className="relative w-full h-screen">
-            {/* Unique Background Image for Each Section */}
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{
-                backgroundImage: `url(${section.image})`,
-                backgroundAttachment: 'fixed',
-                zIndex: -1,
-              }}
-            ></div>
+          <div
+            key={section.id}
+            className="relative w-full h-screen bg-cover bg-center bg-fixed"
+            style={{
+              backgroundImage: `url(${section.image})`,
+              // backgroundAttachment: 'fixed',
+            }}
+          >
             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
             <div className={`relative z-10 flex items-center h-full ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
               <div className={`max-w-md p-6 md:p-8 lg:p-10 backdrop-blur-lg bg-white bg-opacity-90 rounded-lg shadow-xl ${index % 2 === 0 ? 'md:mr-10 mr-0' : 'md:ml-10 ml-0'}`}>
@@ -53,7 +51,7 @@ const Home = () => {
                 <div className="mt-6 text-center">
                   <button 
                     className="bg-yellow-500 transition duration-500 hover:bg-gray-800 hover:text-white text-gray-800 md:text-lg text-sm font-bold py-3 px-6 md:px-9 rounded-full permanent-marker-regular"
-                    onClick={() => handleButtonClick(section.navigateTo)}
+                    onClick={() => handleButtonClick(section.navigateTo)} // Pass the navigation path
                   >
                     {section.buttonText}
                   </button>
