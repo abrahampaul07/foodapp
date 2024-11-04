@@ -1,5 +1,5 @@
-import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram} from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { FaBullhorn } from "react-icons/fa";
 import { MdOutlineAccessTime } from "react-icons/md";
 import { ImSpoonKnife } from "react-icons/im";
@@ -7,6 +7,65 @@ import { MdEmail } from "react-icons/md";
 import image from "../assets/footer.jpg"; 
 
 const Footer = () => {
+  const [timings, setTimings] = useState([]);
+  const [contacts, setContacts] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTimings = async () => {
+      try {
+        const response = await fetch("https://svefc6y9h6.execute-api.us-east-1.amazonaws.com/dev/timing");
+        if (!response.ok) {
+          throw new Error('Failed to fetch timings');
+        }
+        const data = await response.json();
+        const parsedTimings = JSON.parse(data.body); 
+        setTimings(parsedTimings.timings); 
+        console.log(parsedTimings.timings);
+      } catch (error) {
+        setError(error);
+      } 
+    };
+
+    const fetchContacts = async () => {
+      const cachedContacts = localStorage.getItem('contacts');
+      if (cachedContacts) {
+        setContacts(JSON.parse(cachedContacts));
+        setLoading(false);
+      } else {
+      try {
+        const response = await fetch("https://svefc6y9h6.execute-api.us-east-1.amazonaws.com/dev/contact");
+        if (!response.ok) {
+          throw new Error('Failed to fetch contacts');
+        }
+        const data = await response.json();
+        const parsedContacts = JSON.parse(data.body);
+        setContacts(parsedContacts);
+      } catch (error) {
+        setError(error);
+      }
+
+    }
+    }
+
+    const fetchData = async () => {
+      await Promise.all([fetchTimings(), fetchContacts()]);
+      setLoading(false);
+    }
+
+    fetchData();
+  }, []);
+
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <div className="relative bg-black text-white py-6 p-3">
       {/* Background Image */}
@@ -39,17 +98,19 @@ const Footer = () => {
             Opening Hours
           </h3>
           <div className="mt-2">
-            {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map((day, index) => (
-              <div key={index} className="flex flex-col mb-2">
-                <div className="flex justify-between text-sm mb-1">
-                  <span>{day}</span>
-                  <span className="text-yellow-300">
-                    {day === "Saturday" ? "10 AM - 10 PM" : "11 AM - 9 PM"}
-                  </span>
+            {timings.length > 0 ? (
+              timings.map((timing) => (
+                <div key={timing.id} className="flex flex-col mb-2">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>{timing.weekday}</span>
+                    <span className="text-yellow-300">{`${timing.from} - ${timing.to}`}</span>
+                  </div>
+                  <hr className="border-t border-gray-600" />
                 </div>
-                <hr className="border-t border-gray-600" />
-              </div>
-            ))}
+              ))
+            ) : (
+              <div>No timings available</div>
+            )}
           </div>
         </div>
 
@@ -62,10 +123,10 @@ const Footer = () => {
           <div className="flex flex-col items-center mt-2">
             <div className="flex items-center mb-2">
               <MdEmail className="mr-2" />
-              <span>contact@thecorndog.com</span>
+              <span>{contacts.email}</span>
             </div>
             <div className="flex justify-center space-x-4">
-              <a href="#" className="hover:text-yellow-300 transition duration-300">
+              <a href={contacts.facebook} className="hover:text-yellow-300 transition duration-300">
                 <FaFacebook />
               </a>
               <a href="#" className="hover:text-yellow-300 transition duration-300">

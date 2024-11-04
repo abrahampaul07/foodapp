@@ -1,20 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaPhone, FaFacebook, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { LiaHotdogSolid } from "react-icons/lia";
 import { NavLink } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contacts, setContacts] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
+    setMobileMenuOpen(prev => !prev);
   };
 
   const handleNavLinkClick = () => {
-    if (isMobileMenuOpen) {
-      setMobileMenuOpen(false); 
-    }
+    setMobileMenuOpen(false);
   };
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      const cachedContacts = localStorage.getItem('contacts');
+      if (cachedContacts) {
+        setContacts(JSON.parse(cachedContacts));
+        setLoading(false);
+      } else {
+        try {
+          const response = await fetch('https://svefc6y9h6.execute-api.us-east-1.amazonaws.com/dev/contact');
+          if (!response.ok) {
+            throw new Error('Failed to fetch contacts');
+          }
+          const data = await response.json();
+          const contacts = JSON.parse(data.body);
+          setContacts(contacts);
+          localStorage.setItem('contacts', JSON.stringify(contacts)); // Cache contacts
+        } catch (error) {
+          setError(error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchContacts();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  // Extract contact details
+  const businessAddress = contacts?.business_address;
+  const phone = contacts?.phone;
+  const facebook = contacts?.facebook;
 
   return (
     <div className="bg-white shadow-md">
@@ -23,15 +63,15 @@ const Navbar = () => {
         <div className="flex flex-col md:flex-row items-center xl:mx-0 mx-auto">
           <div className="flex items-center">
             <FaMapMarkerAlt className="mr-2 text-yellow-300" />
-            <span>123 Main St, City, Country</span>
+            <span>{businessAddress}</span>
           </div>
           <div className="flex items-center mt-1 md:mt-0 md:ml-4">
             <FaPhone className="mr-2 text-yellow-300" />
-            <span>+1 (234) 567-8901</span>
+            <span>{phone}</span>
           </div>
         </div>
         <div className="hidden md:flex space-x-4 text-xl px-4">
-          <a href="#" className="text-yellow-300 hover:text-white transition duration-300">
+          <a href={facebook} target='_blank' rel='noopener noreferrer' className="text-yellow-300 hover:text-white transition duration-300">
             <FaFacebook />
           </a>
           <a href="#" className="text-yellow-300 hover:text-white transition duration-300">
@@ -73,33 +113,33 @@ const Navbar = () => {
 
       {/* Navbar Links */}
       <div className={`text-center xl:py-5 text-lg permanent-marker-regular ${isMobileMenuOpen ? 'block' : 'hidden md:block'}`}>
-        <nav className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? 'xl:bg-white bg-black' : ''}`}>
+        <nav className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? 'bg-black' : ''}`}>
           <NavLink 
             to="/" 
-            exact 
+            exact="true"
             onClick={handleNavLinkClick}
-            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `md:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 md:text-gray-600 text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Home
           </NavLink>
           <NavLink 
             to="/menu" 
             onClick={handleNavLinkClick}
-            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `md:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 md:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Menu
           </NavLink>
           <NavLink 
-            to="/truck" 
+            to="/location" 
             onClick={handleNavLinkClick}
-            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `md:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 md:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Truck Locator
           </NavLink>
           <NavLink 
             to="/contact" 
             onClick={handleNavLinkClick}
-            className={({ isActive }) => `xl:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 xl:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
+            className={({ isActive }) => `md:text-gray-600 text-white py-2 md:py-0 px-4 rounded transition duration-300 ${isActive ? 'bg-yellow-300 md:text-gray-600 text-black' : 'hover:bg-yellow-300'}`}
           >
             Contact
           </NavLink>
