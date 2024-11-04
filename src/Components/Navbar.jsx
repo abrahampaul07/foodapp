@@ -143,8 +143,13 @@ const Navbar = () => {
             )}
           </svg>
         </button>
-        {/* Conditionally render "xplore" text */}
-        {!isMobileMenuOpen && <span className="text-[17px] text-red-700 comfortaa-uniquifier font-bold">xplore</span>}
+        {/* Make "xplore" clickable */}
+        <span
+          onClick={toggleMobileMenu}
+          className="text-[17px] text-red-700 comfortaa-uniquifier font-bold cursor-pointer"
+        >
+          xplore
+        </span>
       </div>
 
       {/* Navbar Links */}
