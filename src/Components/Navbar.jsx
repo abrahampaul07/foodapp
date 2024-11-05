@@ -32,15 +32,48 @@ const Navbar = () => {
       } else {
         try {
           const response = await fetch(
-            "https://svefc6y9h6.execute-api.us-east-1.amazonaws.com/dev/contact"
+            "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=contact!A1%3AB8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
           );
           if (!response.ok) {
             throw new Error("Failed to fetch contacts");
           }
+
           const data = await response.json();
-          const contacts = JSON.parse(data.body);
-          setContacts(contacts);
-          localStorage.setItem("contacts", JSON.stringify(contacts)); // Cache contacts
+          console.log(data); // Log API response for debugging
+
+          // Extract contact details from the API response
+          const contactData = {};
+          const rows = data.valueRanges[0].values;
+
+          // Loop through rows and extract key-value pairs
+          rows.forEach((row) => {
+            // Map the label to the corresponding value
+            if (row[0] === "email") {
+              contactData.email = row[1];
+            }
+            if (row[0] === "phone") {
+              contactData.phone = row[1];
+            }
+            if (row[0] === "facebook") {
+              contactData.facebook = row[1];
+            }
+            if (row[0] === "instagram") {
+              contactData.instagram = row[1];
+            }
+            if (row[0] === "twitter") {
+              contactData.twitter = row[1] || ""; // Handle empty twitter value
+            }
+            if (row[0] === "business_address") {
+              contactData.business_address = row[1];
+            }
+            if (row[0] === "current_truck_location") {
+              contactData.current_truck_location = row[1];
+            }
+          });
+
+          // Save contacts in the state and localStorage
+          setContacts(contactData);
+          localStorage.setItem("contacts", JSON.stringify(contactData)); // Cache contacts
         } catch (error) {
           setError(error);
         } finally {
@@ -48,6 +81,7 @@ const Navbar = () => {
         }
       }
     };
+
     fetchContacts();
   }, []);
 
@@ -60,9 +94,12 @@ const Navbar = () => {
   }
 
   // Extract contact details
-  const businessAddress = contacts?.business_address;
-  const phone = contacts?.phone;
-  const facebook = contacts?.facebook;
+  // const businessAddress = contacts?.business_address;
+  // const phone = contacts?.phone;
+  // const facebook = contacts?.facebook;
+  // const instagram = contacts?.instagram;
+  // const twitter = contacts?.twitter;
+  // const currentTruckLocation = contacts?.current_truck_location;
 
   return (
     <div className="bg-white shadow-md inter-uniquifier">
@@ -71,16 +108,16 @@ const Navbar = () => {
         <div className="flex flex-col md:flex-row items-center xl:mx-0 mx-auto">
           <div className="flex items-center">
             <FaMapMarkerAlt className="mr-2 text-yellow-500" />
-            <span>{businessAddress}</span>
+            <span>{contacts.business_address}</span>
           </div>
           <div className="flex items-center mt-1 md:mt-0 md:ml-4">
             <FaPhone className="mr-2 text-yellow-500" />
-            <span>{phone}</span>
+            <span>{contacts.phone}</span>
           </div>
         </div>
         <div className="hidden md:flex space-x-4 text-xl px-4">
           <a
-            href={facebook}
+            href={contacts.facebook}
             target="_blank"
             rel="noopener noreferrer"
             className="text-yellow-500 hover:text-white transition duration-300"
@@ -114,7 +151,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Toggle Button with Explore Text */}
-      <div className="md:hidden text-center flex items-center justify-center">
+      <div className="md:hidden text-center flex items-center justify-center md:pb-0 pb-4">
         <button
           onClick={toggleMobileMenu}
           className="focus:outline-none transform transition-transform duration-300 hover:scale-105"
@@ -143,7 +180,6 @@ const Navbar = () => {
             )}
           </svg>
         </button>
-        {/* Make "xplore" clickable */}
         <span
           onClick={toggleMobileMenu}
           className="text-[17px] text-red-700 comfortaa-uniquifier font-bold cursor-pointer"
@@ -154,10 +190,10 @@ const Navbar = () => {
 
       {/* Navbar Links */}
       <div
-        className={`text-center md:py-5 text-lg permanent-marker-regular ${isMobileMenuOpen ? "block" : "hidden md:block"}`}
+        className={`md:block text-center md:pb-10 text-lg permanent-marker-regular transition-all duration-500 transform ${isMobileMenuOpen ? "md:max-h-0 max-h-screen h-auto md:pt-0 pt-2" : "max-h-0 overflow-hidden"}`}
       >
         <nav
-          className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? "bg-black" : ""}`}
+          className={`flex flex-col md:flex-row justify-center space-x-0 md:space-x-6 ${isMobileMenuOpen ? "md:bg-white bg-black" : ""}`}
         >
           <NavLink
             to="/"
