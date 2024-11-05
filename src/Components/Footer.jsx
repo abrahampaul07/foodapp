@@ -15,15 +15,17 @@ const Footer = () => {
     const fetchTimings = async () => {
       try {
         const response = await fetch(
-          "https://svefc6y9h6.execute-api.us-east-1.amazonaws.com/dev/timing"
+          "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=business_timings!A1%3AE8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
         );
         if (!response.ok) {
           throw new Error("Failed to fetch timings");
         }
         const data = await response.json();
-        const parsedTimings = JSON.parse(data.body);
-        setTimings(parsedTimings.timings);
-        console.log(parsedTimings.timings);
+        console.log(data); // Log data to check the format
+
+        // Assuming 'data.valueRanges' is the key to the actual data
+        const timingsData = data.valueRanges[0].values;
+        setTimings(timingsData);
       } catch (error) {
         setError(error);
       }
@@ -37,14 +39,17 @@ const Footer = () => {
       } else {
         try {
           const response = await fetch(
-            "https://svefc6y9h6.execute-api.us-east-1.amazonaws.com/dev/contact"
+            "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=contact!A1%3AB8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
           );
           if (!response.ok) {
             throw new Error("Failed to fetch contacts");
           }
           const data = await response.json();
-          const parsedContacts = JSON.parse(data.body);
-          setContacts(parsedContacts);
+          console.log(data); // Log data to check the format
+
+          // Assuming 'data.valueRanges' is the key to the actual contact info
+          const contactData = data.valueRanges[0].values;
+          setContacts(contactData);
         } catch (error) {
           setError(error);
         }
@@ -69,14 +74,10 @@ const Footer = () => {
 
   return (
     <div className="relative bg-yellow-500 text-white py-6 p-3">
-      {/* Solid Background Color */}
       <div className="absolute inset-0" />
-
-      {/* Dark Overlay (Optional) */}
       <div className="absolute inset-0 opacity-60" />
 
       <div className="container mx-auto relative flex flex-col md:flex-row justify-between items-start">
-        {/* About Section */}
         <div className="w-full md:w-1/3 flex flex-col items-center mb-4 md:mb-0 text-center">
           <h3 className="text-2xl font-semibold flex items-center justify-center permanent-marker-regular text-red-700">
             <ImSpoonKnife className="mr-2" />
@@ -88,7 +89,6 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Opening Hours Section */}
         <div className="w-full md:w-1/3 text-center mb-4 md:mx-4">
           <h3 className="text-2xl font-semibold flex items-center justify-center permanent-marker-regular text-red-700">
             <MdOutlineAccessTime className="mr-2" />
@@ -96,11 +96,19 @@ const Footer = () => {
           </h3>
           <div className="mt-2">
             {timings.length > 0 ? (
-              timings.map((timing) => (
-                <div key={timing.id} className="flex flex-col mb-2">
+              timings.map((timing, index) => (
+                <div key={index} className="flex flex-col mb-2">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-black">{timing.weekday}</span>
-                    <span className="text-black">{`${timing.from} - ${timing.to}`}</span>
+                    <span
+                      className={`text-black ${index === 0 ? "font-bold" : ""}`}
+                    >
+                      {timing[1]} {/* Weekday */}
+                    </span>
+                    <span
+                      className={`text-black ${index === 0 ? "font-bold" : ""}`}
+                    >
+                      {`${timing[2]} - ${timing[3]}`} {/* From - To */}
+                    </span>
                   </div>
                   <hr className="border-t border-black" />
                 </div>
@@ -111,7 +119,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Connect with Us Section */}
         <div className="w-full md:w-1/3 text-center md:ml-4">
           <h3 className="text-2xl font-semibold flex items-center justify-center permanent-marker-regular text-red-700">
             <FaBullhorn className="mr-2" />
@@ -125,6 +132,7 @@ const Footer = () => {
             <div className="flex justify-center text-xl space-x-4">
               <a
                 href={contacts.facebook}
+                target="_blank"
                 className="hover:text-red-700 transition duration-300"
               >
                 <FaFacebook />
@@ -146,7 +154,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Copyright Section */}
       <div className="mt-4 text-center text-black text-xs relative z-10">
         <hr className="my-6 border-black" />
         <p>
@@ -158,4 +165,3 @@ const Footer = () => {
 };
 
 export default Footer;
-  

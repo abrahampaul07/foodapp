@@ -5,7 +5,7 @@ import Menu from './Pages/Menu';
 import TruckLocator from './Pages/TruckLocator';
 import Contact from './Pages/Contact';
 import Navbar from './Components/Navbar';
-// import Footer from './Components/Footer';
+import Footer from './Components/Footer';
 
 function App() {
 
@@ -18,7 +18,7 @@ function App() {
         <Route path='/location' element={<TruckLocator />} />
         <Route path='/contact' element={<Contact />} />
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </Router>
   )
 }
