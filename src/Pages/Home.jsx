@@ -26,9 +26,7 @@ const sections = [
 const Home = () => {
   const navigate = useNavigate();
   
-  // Detect if the device is mobile (iOS/Android)
   const [isMobile, setIsMobile] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     const checkIfMobile = () => {
@@ -45,21 +43,6 @@ const Home = () => {
     return () => window.removeEventListener('resize', checkIfMobile);
   }, []);
 
-  // Scroll handler to adjust background position on scroll (for mobile)
-  const handleScroll = () => {
-    if (isMobile) {
-      setScrollPosition(window.scrollY);  // Track scroll position for mobile
-    }
-  };
-
-  useEffect(() => {
-    // Add scroll event listener for mobile
-    if (isMobile) {
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
-  }, [isMobile]);
-
   const handleButtonClick = (navigateTo) => {
     navigate(navigateTo);
   };
@@ -71,16 +54,16 @@ const Home = () => {
         {sections.map((section, index) => (
           <div
             key={section.id}
-            className="relative w-full h-screen bg-cover bg-center"
+            className="relative w-full h-screen"
             style={{
               backgroundImage: `url(${section.image})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              backgroundAttachment: isMobile ? 'scroll' : 'fixed', // Fixed for desktop, scroll for mobile
+              backgroundAttachment: 'fixed', // Scroll for mobile, fixed for desktop
             }}
           >
-            {/* For mobile, dynamically adjust the background position */}
-            {isMobile && (
+            {/* Mobile Background Simulation */}
+            {/* {isMobile && (
               <div
                 className="mobile-fixed-background"
                 style={{
@@ -91,11 +74,11 @@ const Home = () => {
                   bottom: 0,
                   backgroundImage: `url(${section.image})`,
                   backgroundSize: 'cover',
-                  backgroundPosition: `center ${scrollPosition * 0.5}px`, // Adjust background position for scroll
+                  backgroundPosition: 'center',
                   zIndex: -1,
                 }}
               />
-            )}
+            )} */}
             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
             <div className={`relative z-10 flex items-center h-full ${index % 2 === 0 ? 'justify-start' : 'justify-end'}`}>
               <div className={`max-w-md p-6 md:p-8 lg:p-10 backdrop-blur-lg bg-white bg-opacity-90 rounded-lg shadow-xl ${index % 2 === 0 ? 'md:mr-10 mr-0' : 'md:ml-10 ml-0'}`}>
