@@ -11,10 +11,22 @@ if(!contact){
   localStorage.setItem("contacts_raw",JSON.stringify(await response.json()))
 }
 
-const response = await fetch(
-  "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=business_timings!A1%3AE8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
-);
-localStorage.setItem("timings", JSON.stringify(await response.json()));
+const d = new Date();
+let hour = d.getHours();
+const timings = localStorage.getItem(hour);
+if(!timings){
+  const response = await fetch(
+    "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=business_timings!A1%3AE8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
+  );
+  localStorage.setItem("timings", JSON.stringify(await response.json()));
+  localStorage.setItem(hour, hour);
+  Object.keys(localStorage).forEach(element => {
+    if(parseInt(element) && (element != hour)){
+     localStorage.removeItem(element);
+    }
+  });
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />

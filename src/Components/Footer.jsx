@@ -20,7 +20,6 @@ const Footer = () => {
           throw new Error("Failed to fetch timings");
         }
         const data = JSON.parse(response);
-        console.log(data); // Log data to check the format
 
         // Assuming 'data.valueRanges' is the key to the actual data
         const timingsData = data.valueRanges[0].values;
