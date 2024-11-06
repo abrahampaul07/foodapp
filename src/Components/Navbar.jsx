@@ -25,25 +25,11 @@ const Navbar = () => {
 
   useEffect(() => {
     const fetchContacts = async () => {
-      const cachedContacts = localStorage.getItem("contacts");
+      const cachedContacts = localStorage.getItem("contacts_raw");
       if (cachedContacts) {
-        setContacts(JSON.parse(cachedContacts));
-        setLoading(false);
-      } else {
-        try {
-          const response = await fetch(
-            "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=contact!A1%3AB8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
-          );
-          if (!response.ok) {
-            throw new Error("Failed to fetch contacts");
-          }
-
-          const data = await response.json();
-          console.log(data); // Log API response for debugging
-
-          // Extract contact details from the API response
-          const contactData = {};
-          const rows = data.valueRanges[0].values;
+        const data = JSON.parse(cachedContacts);
+        const rows = data.valueRanges[0].values;
+        let contactData = {};
 
           // Loop through rows and extract key-value pairs
           rows.forEach((row) => {
@@ -72,13 +58,11 @@ const Navbar = () => {
           });
 
           // Save contacts in the state and localStorage
+          localStorage.setItem("contacts", JSON.stringify(contactData));
           setContacts(contactData);
-          localStorage.setItem("contacts", JSON.stringify(contactData)); // Cache contacts
-        } catch (error) {
-          setError(error);
-        } finally {
           setLoading(false);
-        }
+      } else{
+        console.log('no data');
       }
     };
 
