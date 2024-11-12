@@ -5,6 +5,7 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import { ImSpoonKnife } from "react-icons/im";
 import { MdEmail } from "react-icons/md";
 
+
 const Footer = () => {
   const [timings, setTimings] = useState([]);
   const [contacts, setContacts] = useState({});
@@ -14,14 +15,11 @@ const Footer = () => {
   useEffect(() => {
     const fetchTimings = async () => {
       try {
-        const response = await fetch(
-          "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=business_timings!A1%3AE8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
-        );
-        if (!response.ok) {
+        const response = localStorage.getItem('timings')
+        if (!response) {
           throw new Error("Failed to fetch timings");
         }
-        const data = await response.json();
-        console.log(data); // Log data to check the format
+        const data = JSON.parse(response);
 
         // Assuming 'data.valueRanges' is the key to the actual data
         const timingsData = data.valueRanges[0].values;
@@ -36,23 +34,6 @@ const Footer = () => {
       if (cachedContacts) {
         setContacts(JSON.parse(cachedContacts));
         setLoading(false);
-      } else {
-        try {
-          const response = await fetch(
-            "https://sheets.googleapis.com/v4/spreadsheets/1XTEEQ5bytY6HxspmkV0c3XhbGxdBhSyI0sZYZ3x1w-w/values:batchGet?ranges=contact!A1%3AB8&key=AIzaSyAShNLW1Hb-yv9AcRaMzzp9SbcHr_YQ2c4"
-          );
-          if (!response.ok) {
-            throw new Error("Failed to fetch contacts");
-          }
-          const data = await response.json();
-          console.log(data); // Log data to check the format
-
-          // Assuming 'data.valueRanges' is the key to the actual contact info
-          const contactData = data.valueRanges[0].values;
-          setContacts(contactData);
-        } catch (error) {
-          setError(error);
-        }
       }
     };
 
